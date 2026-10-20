@@ -1,0 +1,2 @@
+@model IEnumerable<ClassSchedule>
+@{ViewData["Title"]="Lịch giảng dạy";}<h1>Lịch giảng dạy</h1><div class="row g-3 mt-2">@foreach(var s in Model){<div class="col-md-6 col-lg-4"><div class="form-card"><span class="badge-soft">@s.DayOfWeek</span><h2 class="h5 mt-3">@s.Class.ClassName</h2><p>@s.Class.Course.CourseName</p><b>@s.StartTime.ToString("HH:mm")–@s.EndTime.ToString("HH:mm")</b><div class="text-secondary">@s.RoomOrLink</div></div></div>}</div>

@@ -1,0 +1,3 @@
+using OCRS.Models.Enums; using System.ComponentModel.DataAnnotations;
+namespace OCRS.Models;
+public class Enrollment { public int EnrollmentId { get; set; } public int StudentId { get; set; } public Student Student { get; set; } = null!; public int ClassId { get; set; } public CourseClass Class { get; set; } = null!; public EnrollmentStatus Status { get; set; } public DateTime RegisteredAt { get; set; } = DateTime.UtcNow; public DateTime? ApprovedAt { get; set; } public DateTime? CancelledAt { get; set; } [StringLength(500)] public string? Note { get; set; } public bool OccupiesSeat => Status is EnrollmentStatus.Approved or EnrollmentStatus.Pending; }

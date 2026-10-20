@@ -1,0 +1,2 @@
+@model IEnumerable<Enrollment>
+@{ViewData["Title"]="Học viên";}<h1>Danh sách học viên</h1><div class="table-card p-0 mt-4"><table class="table mb-0"><thead><tr><th>Mã</th><th>Họ tên</th><th>Email</th><th>Lớp</th></tr></thead><tbody>@foreach(var e in Model){<tr><td>@e.Student.StudentCode</td><td>@e.Student.User.FullName</td><td>@e.Student.User.Email</td><td>@e.Class.ClassName</td></tr>}</tbody></table></div>

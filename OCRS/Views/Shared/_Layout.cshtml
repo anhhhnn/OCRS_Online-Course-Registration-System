@@ -1,0 +1,67 @@
+@{
+    var controller = ViewContext.RouteData.Values["controller"]?.ToString();
+    var action = ViewContext.RouteData.Values["action"]?.ToString();
+    var area = ViewContext.RouteData.Values["area"]?.ToString();
+    var isHome = controller == "Home" && action == "Index";
+    var isAuth = controller == "Account" && action is "Login" or "Register" or "ForgotPassword" or "ResetPassword";
+    var isWorkspace = area is "Admin" or "Instructor";
+}
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#102e4a" />
+    <meta name="description" content="OCRS - Nền tảng tìm kiếm và đăng ký khóa học trực tuyến." />
+    <title>@ViewData["Title"] · OCRS Learning</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/OCRS.styles.css" asp-append-version="true" />
+</head>
+<body class="@(isHome ? "home-page" : null) @(isAuth ? "auth-page" : null) @(isWorkspace ? "workspace-page" : null)">
+    <a class="skip-link" href="#main-content">Bỏ qua điều hướng</a>
+    <header class="site-header" data-site-header>
+        <nav class="navbar navbar-expand-lg" aria-label="Điều hướng chính"><div class="container shell">
+            <a class="navbar-brand brand" asp-area="" asp-controller="Home" asp-action="Index" aria-label="OCRS - Trang chủ"><span class="brand-symbol" aria-hidden="true"><span></span></span><span><strong>OCRS</strong><small>Learning Experience</small></span></a>
+            <button class="navbar-toggler menu-toggle" type="button" data-bs-toggle="collapse" data-bs-target="#primaryNavigation" aria-controls="primaryNavigation" aria-expanded="false" aria-label="Mở menu"><span></span><span></span><span></span></button>
+            <div class="navbar-collapse collapse" id="primaryNavigation">
+                <ul class="navbar-nav mx-auto nav-pills-custom"><li class="nav-item"><a class="nav-link @(controller == "Home" ? "active" : null)" asp-area="" asp-controller="Home" asp-action="Index">Trang chủ</a></li><li class="nav-item"><a class="nav-link @(controller is "Courses" or "Classes" ? "active" : null)" asp-area="" asp-controller="Courses" asp-action="Index">Khóa học</a></li>@if (User.Identity?.IsAuthenticated == true) { <li class="nav-item"><a class="nav-link @(controller == "MyCourses" ? "active" : null)" asp-area="" asp-controller="MyCourses" asp-action="Index">Lớp của tôi</a></li> }</ul>
+                <div class="nav-actions"><a class="search-link" asp-area="" asp-controller="Courses" asp-action="Index" aria-label="Tìm khóa học"><svg aria-hidden="true" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-4-4"></path></svg></a>
+                @if (User.Identity?.IsAuthenticated == true) { <a class="notification-link" href="/Notifications" aria-label="Thông báo"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"></path><path d="M10 21h4"></path></svg></a><div class="dropdown"><button class="profile-trigger" data-bs-toggle="dropdown" aria-expanded="false"><span class="avatar">@((User.Identity.Name ?? "U")[0].ToString().ToUpper())</span><span class="profile-name">@User.Identity.Name</span></button><ul class="dropdown-menu dropdown-menu-end"><li><a class="dropdown-item" href="/Profile">Hồ sơ cá nhân</a></li>@if (User.IsInRole("Admin")) { <li><a class="dropdown-item" href="/Admin/Dashboard">Trang quản trị</a></li> }@if (User.IsInRole("Instructor")) { <li><a class="dropdown-item" href="/Instructor/Dashboard">Trang giảng viên</a></li> }<li><hr class="dropdown-divider" /></li><li><form asp-area="" asp-controller="Account" asp-action="Logout" method="post"><button class="dropdown-item">Đăng xuất</button></form></li></ul></div> }
+                else { <a class="btn btn-ghost" href="/Account/Login">Đăng nhập</a><a class="btn btn-primary" href="/Account/Register">Bắt đầu học</a> }
+                </div>
+            </div>
+        </div></nav>
+    </header>
+
+    @if (TempData["Success"] != null || TempData["Error"] != null) { <div class="toast-region container shell" aria-live="polite"><div class="alert site-alert @(TempData["Error"] != null ? "alert-danger" : "alert-success") alert-dismissible fade show" role="status"><span>@(TempData["Error"] ?? TempData["Success"])</span><button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Đóng"></button></div></div> }
+
+    @if (isWorkspace)
+    {
+        <div class="workspace-shell">
+            <aside class="workspace-sidebar" aria-label="Điều hướng khu vực"><div class="workspace-sidebar-inner">
+                <div class="workspace-heading"><span>@(area == "Admin" ? "ADMIN CONSOLE" : "INSTRUCTOR SPACE")</span><strong>@(area == "Admin" ? "Quản trị OCRS" : "Cổng giảng viên")</strong></div>
+                <nav>
+                @if (area == "Admin") { <a class="@(controller == "Dashboard" ? "active" : null)" href="/Admin/Dashboard"><span>01</span>Tổng quan</a><a class="@(controller == "Categories" ? "active" : null)" href="/Admin/Categories"><span>02</span>Danh mục</a><a class="@(controller == "Courses" ? "active" : null)" href="/Admin/Courses"><span>03</span>Khóa học</a><a class="@(controller is "Classes" or "Schedules" ? "active" : null)" href="/Admin/Classes"><span>04</span>Lớp & lịch học</a><a class="@(controller == "Enrollments" ? "active" : null)" href="/Admin/Enrollments"><span>05</span>Đăng ký</a><a class="@(controller == "Instructors" ? "active" : null)" href="/Admin/Instructors"><span>06</span>Giảng viên</a><a class="@(controller == "Users" ? "active" : null)" href="/Admin/Users"><span>07</span>Người dùng</a><a class="@(controller == "Reports" ? "active" : null)" href="/Admin/Reports"><span>08</span>Báo cáo</a><a class="@(controller == "Crm" ? "active" : null)" href="/Admin/Crm"><span>09</span>CRM mô phỏng</a> }
+                else { <a class="@(controller == "Dashboard" ? "active" : null)" href="/Instructor/Dashboard"><span>01</span>Tổng quan</a><a class="@(controller == "MyClasses" ? "active" : null)" href="/Instructor/MyClasses"><span>02</span>Lớp của tôi</a><a class="@(controller == "Schedule" ? "active" : null)" href="/Instructor/Schedule"><span>03</span>Lịch giảng dạy</a><a class="@(controller == "Students" ? "active" : null)" href="/Instructor/Students"><span>04</span>Học viên</a> }
+                </nav>
+                <div class="workspace-sidebar-note">Dữ liệu được cập nhật trực tiếp từ hệ thống OCRS.</div>
+            </div></aside>
+            <main id="main-content" class="workspace-content" role="main"><div class="workspace-mobile-title">@(area == "Admin" ? "Quản trị OCRS" : "Cổng giảng viên")</div>@RenderBody()</main>
+        </div>
+    }
+    else
+    {
+        <main id="main-content" class="site-main @(isHome || isAuth ? null : "container shell page-shell")" role="main">@RenderBody()</main>
+    }
+
+    @if (!isAuth && !isWorkspace)
+    {
+        <footer class="site-footer"><div class="container shell footer-grid"><div class="footer-brand"><a class="brand brand-light" href="/"><span class="brand-symbol" aria-hidden="true"><span></span></span><span><strong>OCRS</strong><small>Learning Experience</small></span></a><p>Nền tảng giúp bạn khám phá khóa học, chọn lịch phù hợp và quản lý hành trình học tập trong một trải nghiệm liền mạch.</p></div><div><h2>Khám phá</h2><a href="/Courses">Tất cả khóa học</a><a href="/MyCourses">Lớp của tôi</a><a href="/Home/Privacy">Quyền riêng tư</a></div><div><h2>Tài khoản</h2><a href="/Account/Login">Đăng nhập</a><a href="/Account/Register">Đăng ký học viên</a><a href="/Profile">Hồ sơ</a></div><div class="footer-note"><span>OCRS · Ocean Edu</span><p>Học tập hôm nay,<br />dẫn lối ngày mai.</p></div></div><div class="container shell footer-bottom"><span>© 2026 OCRS. All rights reserved.</span><a href="https://unsplash.com/@@wildlittlethingsphoto?utm_source=ocrs&utm_medium=referral" target="_blank" rel="noopener">Hero photo by Helena Lopes on Unsplash</a></div></footer>
+    }
+    <script src="~/lib/jquery/dist/jquery.min.js"></script><script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script><script src="~/js/site.js" asp-append-version="true"></script>@await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

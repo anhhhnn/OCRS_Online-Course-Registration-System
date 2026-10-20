@@ -1,0 +1,2 @@
+@model CourseClass
+@{ViewData["Title"]=Model.ClassName;}<h1>@Model.ClassName</h1><p class="text-secondary">Danh sách học viên đăng ký</p><div class="table-card p-0"><table class="table mb-0"><thead><tr><th>Mã học viên</th><th>Họ tên</th><th>Email</th><th>Trạng thái</th></tr></thead><tbody>@foreach(var e in Model.Enrollments){<tr><td>@e.Student.StudentCode</td><td>@e.Student.User.FullName</td><td>@e.Student.User.Email</td><td>@e.Status</td></tr>}</tbody></table></div>

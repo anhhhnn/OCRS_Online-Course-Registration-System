@@ -1,0 +1,4 @@
+using Microsoft.EntityFrameworkCore; using OCRS.Data; using OCRS.Models; using OCRS.Models.Enums;
+namespace OCRS.Services;
+public interface INotificationService { Task CreateAsync(string userId,string title,string content,NotificationType type=NotificationType.Information,int? relatedId=null); Task<int> UnreadCountAsync(string userId); }
+public class NotificationService(ApplicationDbContext db) : INotificationService { public async Task CreateAsync(string userId,string title,string content,NotificationType type=NotificationType.Information,int? relatedId=null){ db.Notifications.Add(new Notification{UserId=userId,Title=title,Content=content,Type=type,RelatedEntityId=relatedId}); await db.SaveChangesAsync(); } public Task<int> UnreadCountAsync(string userId)=>db.Notifications.CountAsync(x=>x.UserId==userId&&!x.IsRead); }

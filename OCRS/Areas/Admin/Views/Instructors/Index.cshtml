@@ -1,0 +1,2 @@
+@model IEnumerable<Instructor>
+@{ViewData["Title"]="Giảng viên";}<div class="section-heading"><h1>Giảng viên</h1><a href="/Admin/Instructors/Create" class="btn btn-primary">Tạo tài khoản</a></div><div class="row g-3">@foreach(var i in Model){<div class="col-md-6 col-lg-4"><div class="form-card"><span class="badge-soft">@i.InstructorCode</span><h2 class="h5 mt-3">@i.User.FullName</h2><p class="text-secondary">@i.Specialization</p><b>@i.Classes.Count lớp phụ trách</b></div></div>}</div>

@@ -1,0 +1,3 @@
+using System.Security.Claims; using Microsoft.AspNetCore.Authorization; using Microsoft.AspNetCore.Mvc; using Microsoft.EntityFrameworkCore; using OCRS.Data;
+namespace OCRS.Areas.Instructor.Controllers;
+[Area("Instructor"),Authorize(Roles="Instructor")] public class ScheduleController(ApplicationDbContext db):Controller { public async Task<IActionResult> Index(){var uid=User.FindFirstValue(ClaimTypes.NameIdentifier);return View(await db.ClassSchedules.Include(x=>x.Class).ThenInclude(x=>x.Course).Where(x=>x.Class.Instructor!.UserId==uid).OrderBy(x=>x.DayOfWeek).ThenBy(x=>x.StartTime).ToListAsync());} }

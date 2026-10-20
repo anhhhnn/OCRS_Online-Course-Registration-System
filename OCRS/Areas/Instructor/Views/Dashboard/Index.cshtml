@@ -1,0 +1,2 @@
+@model IEnumerable<CourseClass>
+@{ViewData["Title"]="Tổng quan giảng viên";}<div class="section-heading"><div><span class="eyebrow text-primary">GIẢNG VIÊN</span><h1>Lớp đang phụ trách</h1></div></div><div class="row g-3">@foreach(var x in Model){<div class="col-md-6 col-lg-4"><div class="form-card"><span class="badge-soft">@x.Status</span><h2 class="h5 mt-3">@x.ClassName</h2><p>@x.Course.CourseName</p><div class="d-flex justify-content-between"><span>@x.StartDate.ToString("dd/MM/yyyy")</span><b>@x.Enrollments.Count học viên</b></div></div></div>}</div>

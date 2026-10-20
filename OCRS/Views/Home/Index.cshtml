@@ -1,0 +1,56 @@
+@model IEnumerable<Course>
+@{
+    ViewData["Title"] = "Khởi đầu hành trình học tập";
+    var categories = (IEnumerable<Category>)ViewBag.Categories;
+    var instructors = (IEnumerable<Instructor>)ViewBag.Instructors;
+    var courseCount = Model.Count();
+}
+
+<section class="home-hero">
+    <div class="container shell hero-grid">
+        <div class="hero-copy reveal">
+            <span class="eyebrow"><i></i> OCRS LEARNING EXPERIENCE</span>
+            <h1>Học một ngôn ngữ.<br /><em>Mở rộng thế giới.</em></h1>
+            <p class="hero-lead">Khám phá khóa học ngoại ngữ, chọn lớp theo lịch của bạn và đăng ký trực tuyến chỉ trong vài thao tác rõ ràng.</p>
+            <div class="hero-actions"><a class="btn btn-primary btn-lg" href="/Courses">Khám phá khóa học <span>→</span></a><a class="btn btn-text" href="#how-it-works">Quy trình đăng ký</a></div>
+            <dl class="hero-stats"><div><dt>@courseCount.ToString("00")</dt><dd>khóa học nổi bật</dd></div><div><dt>@categories.Count().ToString("00")</dt><dd>nhóm chương trình</dd></div><div><dt>03</dt><dd>bước để bắt đầu</dd></div></dl>
+        </div>
+        <div class="hero-media reveal">
+            <div class="hero-image-wrap"><img src="~/images/ocrs-learning-hero.jpg" alt="Nhóm sinh viên cùng trao đổi và học tập tại bàn" width="1800" height="1200" fetchpriority="high" /></div>
+            <div class="hero-float hero-float-top"><span class="pulse-dot"></span><div><small>Đăng ký trực tuyến</small><strong>Nhanh chóng & rõ ràng</strong></div></div>
+            <div class="hero-float hero-float-bottom"><span class="mini-mark">01</span><div><small>Lịch học linh hoạt</small><strong>Chọn lớp phù hợp với bạn</strong></div></div>
+            <a class="photo-credit" href="https://unsplash.com/@@wildlittlethingsphoto?utm_source=ocrs&utm_medium=referral" target="_blank" rel="noopener">Ảnh: Helena Lopes · Unsplash</a>
+        </div>
+    </div>
+    <div class="hero-marquee" aria-hidden="true"><span>LEARN WITH PURPOSE</span><i></i><span>GROW WITH CONFIDENCE</span><i></i><span>START YOUR JOURNEY</span></div>
+</section>
+
+<section class="section section-categories"><div class="container shell">
+    <div class="section-heading reveal"><div><span class="eyebrow"><i></i> LỘ TRÌNH HỌC TẬP</span><h2>Chọn hướng đi<br />phù hợp với bạn.</h2></div><p>Mỗi hành trình bắt đầu từ một mục tiêu khác nhau. Hãy chọn nhóm khóa học gần nhất với điều bạn muốn đạt được.</p></div>
+    <div class="category-grid">@{ var categoryIndex = 1; }@foreach (var category in categories) { <a class="category-tile reveal" href="/Courses?category=@category.CategoryId"><span class="category-number">@categoryIndex.ToString("00")</span><div><h3>@category.CategoryName</h3><p>@category.Courses.Count khóa học đang xuất bản</p></div><span class="category-arrow" aria-hidden="true">↗</span></a> categoryIndex++; }</div>
+</div></section>
+
+<section class="section featured-section"><div class="container shell">
+    <div class="section-heading reveal"><div><span class="eyebrow eyebrow-light"><i></i> ĐANG TUYỂN SINH</span><h2>Khóa học được<br />quan tâm.</h2></div><a class="arrow-link light" href="/Courses">Xem tất cả khóa học <span>→</span></a></div>
+    <div class="course-grid">@foreach (var course in Model) { <partial name="_CourseCard" model="course" /> }</div>
+</div></section>
+
+<section class="section why-section"><div class="container shell why-grid">
+    <div class="why-intro reveal"><span class="eyebrow"><i></i> MỘT TRẢI NGHIỆM LIỀN MẠCH</span><h2>Tập trung vào việc học,<br />để hệ thống lo phần còn lại.</h2><p>Từ lúc tìm khóa học đến khi theo dõi lớp đã đăng ký, mọi thông tin quan trọng đều được tổ chức rõ ràng.</p></div>
+    <div class="benefit-list"><article class="benefit reveal"><span>01</span><div><h3>Tìm khóa học dễ dàng</h3><p>Tìm kiếm và lọc theo danh mục, hình thức học hoặc mục tiêu của bạn.</p></div></article><article class="benefit reveal"><span>02</span><div><h3>Lịch học minh bạch</h3><p>Xem thời gian, địa điểm, giảng viên và số chỗ còn lại trước khi quyết định.</p></div></article><article class="benefit reveal"><span>03</span><div><h3>Đăng ký trực tuyến</h3><p>Hoàn tất đăng ký an toàn ngay trên hệ thống, không cần quy trình rườm rà.</p></div></article><article class="benefit reveal"><span>04</span><div><h3>Theo dõi tập trung</h3><p>Quản lý các lớp đã đăng ký và nhận thông báo trong tài khoản cá nhân.</p></div></article></div>
+</div></section>
+
+<section class="section process-section" id="how-it-works"><div class="container shell">
+    <div class="process-heading reveal"><span class="eyebrow"><i></i> BẮT ĐẦU ĐƠN GIẢN</span><h2>Ba bước cho một<br />khởi đầu mới.</h2></div>
+    <ol class="process-list"><li class="reveal"><span>01</span><div><h3>Khám phá</h3><p>Tìm khóa học phù hợp với mục tiêu và quỹ thời gian của bạn.</p></div></li><li class="reveal"><span>02</span><div><h3>Chọn lớp</h3><p>Kiểm tra lịch, hình thức học và số chỗ còn lại của từng lớp.</p></div></li><li class="reveal"><span>03</span><div><h3>Đăng ký</h3><p>Xác nhận lựa chọn và theo dõi trạng thái ngay trong tài khoản.</p></div></li></ol>
+</div></section>
+
+@if (instructors.Any())
+{
+    <section class="section instructor-section"><div class="container shell">
+        <div class="section-heading reveal"><div><span class="eyebrow"><i></i> NGƯỜI ĐỒNG HÀNH</span><h2>Giảng viên trong<br />hệ thống OCRS.</h2></div><p>Thông tin được lấy trực tiếp từ hồ sơ giảng viên và các lớp đang phụ trách.</p></div>
+        <div class="instructor-grid">@foreach (var instructor in instructors) { <article class="instructor-profile reveal"><div class="instructor-monogram" aria-hidden="true">@instructor.User.FullName.Trim()[0]</div><div><span>@instructor.InstructorCode</span><h3>@instructor.User.FullName</h3><p>@(string.IsNullOrWhiteSpace(instructor.Specialization) ? "Chuyên môn đang cập nhật" : instructor.Specialization)</p><small>@instructor.Classes.Count lớp phụ trách</small></div></article> }</div>
+    </div></section>
+}
+
+<section class="home-cta"><div class="container shell cta-inner reveal"><span class="eyebrow eyebrow-light"><i></i> SẴN SÀNG BẮT ĐẦU?</span><h2>Khóa học phù hợp<br />đang chờ bạn khám phá.</h2><a class="btn btn-accent btn-lg" href="/Courses">Tìm khóa học ngay <span>→</span></a></div></section>

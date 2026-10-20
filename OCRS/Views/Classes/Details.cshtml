@@ -1,0 +1,20 @@
+@model CourseClass
+@{
+    ViewData["Title"] = Model.ClassName;
+    var now = DateTime.UtcNow;
+    var remaining = Math.Max(0, Model.MaxCapacity - Model.CurrentEnrollment);
+    var isFull = remaining == 0;
+    var isOpen = Model.Status == ClassStatus.OpenForRegistration && Model.RegistrationOpenAt <= now && Model.RegistrationCloseAt >= now;
+    var modeText = Model.LearningMode switch { LearningMode.Online => "Trực tuyến", LearningMode.Offline => "Tại trung tâm", _ => "Kết hợp" };
+    var statusText = !isOpen ? (now < Model.RegistrationOpenAt ? "Chưa mở đăng ký" : "Đã đóng đăng ký") : isFull ? "Đã đủ chỗ" : remaining <= Math.Max(2, Model.MaxCapacity / 5) ? "Sắp đầy" : "Đang nhận đăng ký";
+}
+<nav class="breadcrumb-nav" aria-label="Breadcrumb"><a href="/">Trang chủ</a><span>/</span><a href="/Courses">Khóa học</a><span>/</span><a href="/Courses/Details/@Model.CourseId">@Model.Course.CourseName</a><span>/</span><span>@Model.ClassName</span></nav>
+<header class="class-header reveal"><div><span class="eyebrow"><i></i> @Model.ClassCode</span><h1>@Model.ClassName</h1><p>@Model.Course.CourseName</p></div><div class="class-header-status"><span class="badge-soft">@statusText</span><span class="badge-soft">@modeText</span></div></header>
+<div class="detail-layout class-detail-layout"><div class="detail-main">
+    <section class="content-block reveal"><span class="section-kicker">THÔNG TIN LỚP</span><h2>Mọi điều bạn cần biết</h2><dl class="info-grid"><div><dt>Giảng viên</dt><dd>@(Model.Instructor?.User.FullName ?? "Đang cập nhật")</dd></div><div><dt>Thời gian</dt><dd>@Model.StartDate.ToString("dd/MM/yyyy") — @Model.EndDate.ToString("dd/MM/yyyy")</dd></div><div><dt>Hình thức</dt><dd>@modeText</dd></div><div><dt>Địa điểm</dt><dd>@(string.IsNullOrWhiteSpace(Model.Location) ? "Đang cập nhật" : Model.Location)</dd></div></dl></section>
+    <section class="content-block reveal"><span class="section-kicker">LỊCH HỌC</span><h2>Thời khóa biểu</h2>@if (!Model.Schedules.Any()) { <p class="text-secondary">Lịch học chi tiết đang được cập nhật.</p> } else { <div class="schedule-list">@foreach (var schedule in Model.Schedules) { <div><span>@schedule.DayOfWeek</span><strong>@schedule.StartTime.ToString("HH:mm") — @schedule.EndTime.ToString("HH:mm")</strong><small>@schedule.RoomOrLink</small></div> }</div> }</section>
+    </div><aside class="registration-card class-register-card reveal"><span class="section-kicker">TÌNH TRẠNG ĐĂNG KÝ</span><div class="seat-count">@remaining</div><p>chỗ còn lại trên tổng số @Model.MaxCapacity · @statusText</p><div class="capacity-track"><span style="width:@(Math.Min(100, Model.CurrentEnrollment * 100 / Math.Max(1, Model.MaxCapacity)))%"></span></div>
+        @if (User.Identity?.IsAuthenticated == true && User.IsInRole("Student")) { <form action="/Enrollments/Register" method="post" data-loading-form>@Html.AntiForgeryToken()<input type="hidden" name="classId" value="@Model.ClassId" /><button class="btn btn-primary btn-lg w-100" disabled="@(!isOpen || isFull ? "disabled" : null)"><span class="button-label">@(!isOpen ? statusText : isFull ? "Lớp đã đủ chỗ" : "Đăng ký lớp này")</span><span class="button-loader" aria-hidden="true"></span></button></form> }
+        else if (User.Identity?.IsAuthenticated != true) { <a class="btn btn-primary btn-lg w-100 @(!isOpen || isFull ? "disabled" : null)" href="@(!isOpen || isFull ? null : $"/Account/Login?returnUrl=/Classes/Details/{Model.ClassId}")" aria-disabled="@(!isOpen || isFull ? "true" : null)">@(!isOpen || isFull ? statusText : "Đăng nhập để đăng ký") <span>→</span></a> }
+        <small class="secure-note">Số chỗ được xác nhận bởi hệ thống khi hoàn tất đăng ký.</small>
+    </aside></div>

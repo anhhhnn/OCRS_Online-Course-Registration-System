@@ -1,0 +1,26 @@
+@model Course
+@{
+    ViewData["Title"] = Model.CourseName;
+    var modeText = Model.LearningMode switch { LearningMode.Online => "Trực tuyến", LearningMode.Offline => "Tại trung tâm", _ => "Kết hợp" };
+}
+<nav class="breadcrumb-nav" aria-label="Breadcrumb"><a href="/">Trang chủ</a><span>/</span><a href="/Courses">Khóa học</a><span>/</span><span>@Model.CourseName</span></nav>
+<section class="course-detail-hero reveal">
+    <div class="course-detail-copy"><span class="eyebrow"><i></i> @Model.Category.CategoryName.ToUpperInvariant()</span><h1>@Model.CourseName</h1><p>@Model.Description</p><div class="detail-tags"><span>@Model.Duration giờ học</span><span>@modeText</span><span>@Model.CourseCode</span></div></div>
+    <div class="detail-art course-accent-@((Model.CategoryId % 4) + 1)" aria-hidden="true"><span>@Model.CourseCode</span><i></i><i></i><small>OCRS · COURSE</small></div>
+</section>
+<div class="detail-layout">
+    <div class="detail-main">
+        <section class="content-block reveal"><span class="section-kicker">VỀ KHÓA HỌC</span><h2>Bạn sẽ đạt được gì?</h2><p class="prose">@(string.IsNullOrWhiteSpace(Model.Objectives) ? "Nội dung và mục tiêu chi tiết đang được cập nhật. Vui lòng xem danh sách lớp hoặc liên hệ bộ phận đào tạo để được tư vấn." : Model.Objectives)</p></section>
+        <section class="content-block class-section reveal" id="classes"><div class="content-title"><div><span class="section-kicker">LỊCH KHAI GIẢNG</span><h2>Chọn lớp phù hợp</h2></div><span>@Model.Classes.Count lớp đang mở</span></div>
+            @if (!Model.Classes.Any()) { <div class="inline-empty"><h3>Chưa có lớp đang tuyển sinh</h3><p>Bạn có thể quay lại sau để xem lịch khai giảng mới.</p></div> }
+            @foreach (var item in Model.Classes)
+            {
+                var remaining = Math.Max(0, item.MaxCapacity - item.CurrentEnrollment);
+                var classMode = item.LearningMode switch { LearningMode.Online => "Trực tuyến", LearningMode.Offline => "Tại trung tâm", _ => "Kết hợp" };
+                var availability = remaining == 0 ? "Đã đủ chỗ" : remaining <= Math.Max(2, item.MaxCapacity / 5) ? "Sắp đầy" : "Còn chỗ";
+                <article class="class-row"><div><span class="status-dot @(remaining == 0 ? "is-full" : null)"></span><strong>@item.ClassName</strong><small>Khai giảng @item.StartDate.ToString("dd/MM/yyyy") · @availability</small></div><div><small>Hình thức</small><strong>@classMode</strong></div><div><small>Chỗ còn lại</small><strong>@remaining / @item.MaxCapacity</strong></div><a href="/Classes/Details/@item.ClassId">Xem lớp <span>→</span></a></article>
+            }
+        </section>
+    </div>
+    <aside class="registration-card reveal"><span class="section-kicker">HỌC PHÍ TRỌN KHÓA</span><div class="price">@Model.TuitionFee.ToString("N0") <small>đ</small></div><p>Chọn một lớp đang mở để kiểm tra lịch học, giảng viên và hoàn tất đăng ký.</p><a class="btn btn-primary btn-lg w-100" href="#classes">Xem lớp đang mở <span>→</span></a><ul><li><span>✓</span> @Model.Duration giờ theo lộ trình</li><li><span>✓</span> Theo dõi đăng ký trực tuyến</li><li><span>✓</span> Thông tin lớp minh bạch</li></ul></aside>
+</div>

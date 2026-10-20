@@ -1,0 +1,3 @@
+using Microsoft.AspNetCore.Authorization; using Microsoft.AspNetCore.Mvc; using Microsoft.EntityFrameworkCore; using OCRS.Data; using OCRS.Services;
+namespace OCRS.Areas.Admin.Controllers;
+[Area("Admin"),Authorize(Roles="Admin")] public class CrmController(ApplicationDbContext db,ICrmSyncService crm):Controller { public async Task<IActionResult> Index()=>View(await db.SyncLogs.OrderByDescending(x=>x.SyncedAt).Take(50).ToListAsync()); [HttpPost,ValidateAntiForgeryToken] public async Task<IActionResult> Sync(){var r=await crm.ImportSampleAsync();TempData["Success"]=$"Đồng bộ mô phỏng: {r.Success} thành công, {r.Skipped} bỏ qua, {r.Failed} lỗi.";return RedirectToAction(nameof(Index));} }

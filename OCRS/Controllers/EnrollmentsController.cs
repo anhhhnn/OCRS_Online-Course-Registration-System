@@ -1,0 +1,4 @@
+using System.Security.Claims; using Microsoft.AspNetCore.Authorization; using Microsoft.AspNetCore.Mvc; using OCRS.Services;
+namespace OCRS.Controllers;
+[Authorize(Roles="Student,Admin")] public class EnrollmentsController(IRegistrationService registration):Controller
+{ [HttpPost,ValidateAntiForgeryToken] public async Task<IActionResult> Register(int classId){var r=await registration.RegisterAsync(classId,User.FindFirstValue(ClaimTypes.NameIdentifier)!);TempData[r.Succeeded?"Success":"Error"]=r.Message;return RedirectToAction("Details","Classes",new{id=classId});} [HttpPost,ValidateAntiForgeryToken] public async Task<IActionResult> Cancel(int id){var r=await registration.CancelAsync(id,User.FindFirstValue(ClaimTypes.NameIdentifier)!,User.IsInRole("Admin"));TempData[r.Succeeded?"Success":"Error"]=r.Message;return RedirectToAction("Index","MyCourses");} }

@@ -1,0 +1,3 @@
+using System.Security.Claims; using Microsoft.AspNetCore.Authorization; using Microsoft.AspNetCore.Mvc; using Microsoft.EntityFrameworkCore; using OCRS.Data; using OCRS.Models.Enums;
+namespace OCRS.Areas.Instructor.Controllers;
+[Area("Instructor"),Authorize(Roles="Instructor")] public class StudentsController(ApplicationDbContext db):Controller { public async Task<IActionResult> Index(int? classId){var uid=User.FindFirstValue(ClaimTypes.NameIdentifier);var q=db.Enrollments.Include(x=>x.Student).ThenInclude(x=>x.User).Include(x=>x.Class).Where(x=>x.Class.Instructor!.UserId==uid&&x.Status==EnrollmentStatus.Approved);if(classId.HasValue)q=q.Where(x=>x.ClassId==classId);return View(await q.OrderBy(x=>x.Student.User.FullName).ToListAsync());} }

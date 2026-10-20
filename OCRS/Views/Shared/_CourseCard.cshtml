@@ -1,0 +1,13 @@
+@model Course
+@{
+    var accentClass = $"course-accent-{(Model.CategoryId % 4) + 1}";
+    var modeText = Model.LearningMode switch { LearningMode.Online => "Trực tuyến", LearningMode.Offline => "Tại trung tâm", _ => "Kết hợp" };
+}
+<article class="course-card @accentClass reveal">
+    <a class="course-visual" href="/Courses/Details/@Model.CourseId" aria-label="Xem @Model.CourseName">
+        @if (!string.IsNullOrWhiteSpace(Model.ImageUrl)) { <img src="@Model.ImageUrl" alt="Hình ảnh khóa học @Model.CourseName" loading="lazy" width="640" height="400" /> }
+        else { <div class="course-art" aria-hidden="true"><span>@Model.CourseCode[..Math.Min(3, Model.CourseCode.Length)]</span><i></i><i></i></div> }
+        <span class="course-category">@Model.Category.CategoryName</span>
+    </a>
+    <div class="course-content"><div class="course-meta"><span>@Model.Duration giờ</span><span>@modeText</span></div><h3><a href="/Courses/Details/@Model.CourseId">@Model.CourseName</a></h3><p class="clamp">@(string.IsNullOrWhiteSpace(Model.Description) ? "Khám phá nội dung học tập được thiết kế theo lộ trình rõ ràng." : Model.Description)</p><div class="course-footer"><strong>@Model.TuitionFee.ToString("N0") <small>đ</small></strong><a class="arrow-link" href="/Courses/Details/@Model.CourseId">Xem chi tiết <span aria-hidden="true">→</span></a></div></div>
+</article>

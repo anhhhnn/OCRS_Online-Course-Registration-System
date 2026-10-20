@@ -1,0 +1,7 @@
+using System.ComponentModel.DataAnnotations;
+namespace OCRS.ViewModels.Account;
+public class RegisterViewModel { [Required,Display(Name="Họ và tên")] public string FullName {get;set;}=""; [Required,EmailAddress] public string Email {get;set;}=""; [Required,Phone] public string PhoneNumber {get;set;}=""; [Required,DataType(DataType.Password)] public string Password {get;set;}=""; [Required,Compare(nameof(Password)),DataType(DataType.Password),Display(Name="Xác nhận mật khẩu")] public string ConfirmPassword {get;set;}=""; }
+public class LoginViewModel { [Required,EmailAddress] public string Email {get;set;}=""; [Required,DataType(DataType.Password)] public string Password {get;set;}=""; [Display(Name="Ghi nhớ đăng nhập")] public bool RememberMe {get;set;} }
+public class ProfileViewModel { [Required,Display(Name="Họ và tên")] public string FullName {get;set;}=""; [Phone,Display(Name="Số điện thoại")] public string? PhoneNumber {get;set;} [DataType(DataType.Date),Display(Name="Ngày sinh")] public DateTime? DateOfBirth {get;set;} [Display(Name="Địa chỉ")] public string? Address {get;set;} }
+public class ForgotPasswordViewModel { [Required,EmailAddress] public string Email {get;set;}=""; }
+public class ResetPasswordViewModel { [Required,EmailAddress] public string Email {get;set;}=""; [Required] public string Token {get;set;}=""; [Required,DataType(DataType.Password)] public string Password {get;set;}=""; [Compare(nameof(Password)),DataType(DataType.Password)] public string ConfirmPassword {get;set;}=""; }

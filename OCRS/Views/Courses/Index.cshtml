@@ -1,0 +1,20 @@
+@model IEnumerable<Course>
+@{ ViewData["Title"] = "Khám phá khóa học"; var categories = (IEnumerable<Category>)ViewBag.Categories; var selectedCategory = Context.Request.Query["category"].ToString(); var selectedMode = Context.Request.Query["mode"].ToString(); }
+<nav class="breadcrumb-nav" aria-label="Breadcrumb"><a href="/">Trang chủ</a><span>/</span><span>Khóa học</span></nav>
+<header class="page-hero course-page-hero reveal"><div><span class="eyebrow"><i></i> KHÁM PHÁ CHƯƠNG TRÌNH</span><h1>Tìm khóa học<br /><em>dành cho bạn.</em></h1></div><p>Duyệt các chương trình đang tuyển sinh và chọn lịch học phù hợp với mục tiêu, nhịp sống của riêng bạn.</p></header>
+<form class="filter-bar reveal" method="get" aria-label="Bộ lọc khóa học">
+    <div class="search-field"><svg aria-hidden="true" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-4-4"></path></svg><label class="visually-hidden" for="course-search">Tìm khóa học</label><input id="course-search" name="q" value="@Context.Request.Query["q"]" placeholder="Tên hoặc mã khóa học" /></div>
+    <div><label class="visually-hidden" for="category-filter">Danh mục</label><select id="category-filter" name="category"><option value="">Tất cả danh mục</option>@foreach (var category in categories) { <option value="@category.CategoryId" selected="@(selectedCategory == category.CategoryId.ToString() ? "selected" : null)">@category.CategoryName</option> }</select></div>
+    <div><label class="visually-hidden" for="mode-filter">Hình thức</label><select id="mode-filter" name="mode"><option value="">Mọi hình thức</option>@foreach (var mode in Enum.GetValues<LearningMode>()) { <option value="@((int)mode)" selected="@(selectedMode == ((int)mode).ToString() || selectedMode == mode.ToString() ? "selected" : null)">@mode</option> }</select></div>
+    <button class="btn btn-primary" type="submit">Tìm kiếm <span>→</span></button>
+</form>
+<div class="results-head"><p><strong>@Model.Count()</strong> khóa học trên trang này</p>@if (!string.IsNullOrWhiteSpace(Context.Request.Query["q"])) { <a href="/Courses">Xóa bộ lọc</a> }</div>
+@if (!Model.Any())
+{
+    <div class="empty-state reveal"><span class="empty-symbol">⌕</span><h2>Chưa tìm thấy khóa học phù hợp</h2><p>Hãy thử một từ khóa khác hoặc đặt lại bộ lọc để xem toàn bộ chương trình.</p><a class="btn btn-outline-primary" href="/Courses">Xem tất cả khóa học</a></div>
+}
+else { <div class="course-grid catalog-grid">@foreach (var course in Model) { <partial name="_CourseCard" model="course" /> }</div> }
+@if ((int)ViewBag.Total > 1)
+{
+    <nav class="pagination-wrap" aria-label="Phân trang"><ul class="pagination">@for (int i = 1; i <= (int)ViewBag.Total; i++) { <li class="page-item @((int)ViewBag.Page == i ? "active" : null)"><a class="page-link" href="?q=@Context.Request.Query["q"]&category=@Context.Request.Query["category"]&mode=@Context.Request.Query["mode"]&page=@i" aria-current="@((int)ViewBag.Page == i ? "page" : null)">@i</a></li> }</ul></nav>
+}

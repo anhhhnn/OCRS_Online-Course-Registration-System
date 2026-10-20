@@ -1,0 +1,5 @@
+using Microsoft.EntityFrameworkCore; using OCRS.Data; using OCRS.Models.Enums;
+namespace OCRS.Services;
+public record ReportRow(string StudentCode,string StudentName,string Email,string Course,string Class,string Status,DateTime RegisteredAt);
+public interface IReportService { Task<List<ReportRow>> GetAsync(DateTime? from,DateTime? to,int? courseId,int? classId,EnrollmentStatus? status); }
+public class ReportService(ApplicationDbContext db):IReportService { public Task<List<ReportRow>> GetAsync(DateTime? from,DateTime? to,int? courseId,int? classId,EnrollmentStatus? status){ var q=db.Enrollments.AsNoTracking().AsQueryable(); if(from.HasValue)q=q.Where(x=>x.RegisteredAt>=from); if(to.HasValue)q=q.Where(x=>x.RegisteredAt<to.Value.AddDays(1)); if(courseId.HasValue)q=q.Where(x=>x.Class.CourseId==courseId); if(classId.HasValue)q=q.Where(x=>x.ClassId==classId); if(status.HasValue)q=q.Where(x=>x.Status==status); return q.OrderByDescending(x=>x.RegisteredAt).Select(x=>new ReportRow(x.Student.StudentCode,x.Student.User.FullName,x.Student.User.Email!,x.Class.Course.CourseName,x.Class.ClassName,x.Status.ToString(),x.RegisteredAt)).ToListAsync(); } }

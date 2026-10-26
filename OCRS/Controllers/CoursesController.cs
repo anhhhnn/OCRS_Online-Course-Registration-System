@@ -1,7 +1,45 @@
-using Microsoft.AspNetCore.Mvc; using Microsoft.EntityFrameworkCore; using OCRS.Data; using OCRS.Models.Enums;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
+using OCRS.Data;
+using OCRS.Models.Enums;
+using OCRS.Services;
+using OCRS.ViewModels.Catalog;
+
 namespace OCRS.Controllers;
-public class CoursesController(ApplicationDbContext db):Controller
+
+public sealed class CoursesController(ICourseService courses, ApplicationDbContext db) : Controller
 {
- public async Task<IActionResult> Index(string? q,int? category,LearningMode? mode,int page=1){const int size=9;var x=db.Courses.AsNoTracking().Include(c=>c.Category).Where(c=>c.Status==CourseStatus.Published);if(!string.IsNullOrWhiteSpace(q))x=x.Where(c=>c.CourseName.Contains(q)||c.CourseCode.Contains(q));if(category.HasValue)x=x.Where(c=>c.CategoryId==category);if(mode.HasValue)x=x.Where(c=>c.LearningMode==mode);ViewBag.Categories=await db.Categories.Where(c=>c.IsActive).ToListAsync();ViewBag.Page=page;ViewBag.Total=(int)Math.Ceiling(await x.CountAsync()/(double)size);return View(await x.OrderBy(c=>c.CourseName).Skip((page-1)*size).Take(size).ToListAsync());}
- public async Task<IActionResult> Details(int id){var c=await db.Courses.AsNoTracking().Include(x=>x.Category).Include(x=>x.Classes.Where(k=>k.Status==ClassStatus.OpenForRegistration)).ThenInclude(x=>x.Instructor).ThenInclude(x=>x!.User).Include(x=>x.Classes).ThenInclude(x=>x.Schedules).SingleOrDefaultAsync(x=>x.CourseId==id&&x.Status==CourseStatus.Published);return c==null?NotFound():View(c);}
+    public async Task<IActionResult> Index(string? q, int? category, LearningMode? mode, int page = 1, CancellationToken ct = default)
+    {
+        const int size = 9;
+        page = Math.Max(1, page);
+        var result = await courses.GetPublishedPageAsync(q, category, mode, page, size, ct);
+        ViewBag.Categories = await db.Categories.AsNoTracking().Where(x => x.IsActive).ToListAsync(ct);
+        ViewBag.Page = page;
+        ViewBag.Total = result.TotalPages;
+        return View(result.Items);
+    }
+
+    public async Task<IActionResult> Details(int id, CancellationToken ct)
+    {
+        var course = await courses.GetPublishedDetailsAsync(id, ct);
+        if (course is null) return NotFound();
+        var enrollmentByClass = new Dictionary<int, EnrollmentSnapshot>();
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (!string.IsNullOrEmpty(userId))
+        {
+            enrollmentByClass = await db.Enrollments.AsNoTracking()
+                .Where(x => x.Student.UserId == userId && x.Class.CourseId == id)
+                .GroupBy(x => x.ClassId)
+                .Select(g => g.OrderByDescending(x => x.RegisteredAt).First())
+                .ToDictionaryAsync(x => x.ClassId, x => new EnrollmentSnapshot(x.EnrollmentId, x.Status), ct);
+        }
+        var now = DateTime.UtcNow;
+        var cards = course.Classes
+            .OrderByDescending(x => x.Status == ClassStatus.OpenForRegistration && x.RegistrationOpenAt <= now && x.RegistrationCloseAt >= now && x.CurrentEnrollment < x.MaxCapacity)
+            .ThenBy(x => x.StartDate)
+            .Select(x => new ClassCardViewModel { Class = x, Enrollment = enrollmentByClass.GetValueOrDefault(x.ClassId) }).ToList();
+        return View(new CourseDetailsViewModel { Course = course, Classes = cards });
+    }
 }

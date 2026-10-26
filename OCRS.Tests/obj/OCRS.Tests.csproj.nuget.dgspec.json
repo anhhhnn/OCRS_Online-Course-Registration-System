@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "D:\\aspc#\\baikiemtra\\demo_Project\\OCRS.Tests\\OCRS.Tests.csproj": {}
+    "D:\\aspc#\\baikiemtra\\demo_Project\\OCRS_Online-Course-Registration-System\\OCRS.Tests\\OCRS.Tests.csproj": {}
   },
   "projects": {
-    "D:\\aspc#\\baikiemtra\\demo_Project\\OCRS.Tests\\OCRS.Tests.csproj": {
+    "D:\\aspc#\\baikiemtra\\demo_Project\\OCRS_Online-Course-Registration-System\\OCRS.Tests\\OCRS.Tests.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\aspc#\\baikiemtra\\demo_Project\\OCRS.Tests\\OCRS.Tests.csproj",
+        "projectUniqueName": "D:\\aspc#\\baikiemtra\\demo_Project\\OCRS_Online-Course-Registration-System\\OCRS.Tests\\OCRS.Tests.csproj",
         "projectName": "OCRS.Tests",
-        "projectPath": "D:\\aspc#\\baikiemtra\\demo_Project\\OCRS.Tests\\OCRS.Tests.csproj",
+        "projectPath": "D:\\aspc#\\baikiemtra\\demo_Project\\OCRS_Online-Course-Registration-System\\OCRS.Tests\\OCRS.Tests.csproj",
         "packagesPath": "C:\\Users\\Admin\\.nuget\\packages\\",
-        "outputPath": "D:\\aspc#\\baikiemtra\\demo_Project\\OCRS.Tests\\obj\\",
+        "outputPath": "D:\\aspc#\\baikiemtra\\demo_Project\\OCRS_Online-Course-Registration-System\\OCRS.Tests\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -34,8 +34,8 @@
             "framework": "net10.0",
             "targetAlias": "net10.0",
             "projectReferences": {
-              "D:\\aspc#\\baikiemtra\\demo_Project\\OCRS\\OCRS.csproj": {
-                "projectPath": "D:\\aspc#\\baikiemtra\\demo_Project\\OCRS\\OCRS.csproj"
+              "D:\\aspc#\\baikiemtra\\demo_Project\\OCRS_Online-Course-Registration-System\\OCRS\\OCRS.csproj": {
+                "projectPath": "D:\\aspc#\\baikiemtra\\demo_Project\\OCRS_Online-Course-Registration-System\\OCRS\\OCRS.csproj"
               }
             }
           }
@@ -63,23 +63,16 @@
             },
             "Microsoft.NET.Test.Sdk": {
               "target": "Package",
-              "version": "[17.14.1, )"
-            },
-            "System.Security.Cryptography.Pkcs": {
-              "target": "Package",
-              "version": "[10.0.13, )"
-            },
-            "coverlet.collector": {
-              "target": "Package",
-              "version": "[6.0.4, )"
+              "version": "[18.0.1, )"
             },
             "xunit": {
               "target": "Package",
               "version": "[2.9.3, )"
             },
             "xunit.runner.visualstudio": {
+              "suppressParent": "All",
               "target": "Package",
-              "version": "[3.1.4, )"
+              "version": "[3.1.5, )"
             }
           },
           "imports": [
@@ -376,14 +369,14 @@
         }
       }
     },
-    "D:\\aspc#\\baikiemtra\\demo_Project\\OCRS\\OCRS.csproj": {
+    "D:\\aspc#\\baikiemtra\\demo_Project\\OCRS_Online-Course-Registration-System\\OCRS\\OCRS.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\aspc#\\baikiemtra\\demo_Project\\OCRS\\OCRS.csproj",
+        "projectUniqueName": "D:\\aspc#\\baikiemtra\\demo_Project\\OCRS_Online-Course-Registration-System\\OCRS\\OCRS.csproj",
         "projectName": "OCRS",
-        "projectPath": "D:\\aspc#\\baikiemtra\\demo_Project\\OCRS\\OCRS.csproj",
+        "projectPath": "D:\\aspc#\\baikiemtra\\demo_Project\\OCRS_Online-Course-Registration-System\\OCRS\\OCRS.csproj",
         "packagesPath": "C:\\Users\\Admin\\.nuget\\packages\\",
-        "outputPath": "D:\\aspc#\\baikiemtra\\demo_Project\\OCRS\\obj\\",
+        "outputPath": "D:\\aspc#\\baikiemtra\\demo_Project\\OCRS_Online-Course-Registration-System\\OCRS\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"

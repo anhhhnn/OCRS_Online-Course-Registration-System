@@ -47,13 +47,35 @@
   });
 
   document.querySelectorAll('[data-loading-form]').forEach(form => {
-    form.addEventListener('submit', () => {
-      if (typeof window.jQuery !== 'undefined' && !window.jQuery(form).valid()) return;
+    form.addEventListener('submit', event => {
+      if (!form.checkValidity() || (typeof window.jQuery !== 'undefined' && !window.jQuery(form).valid())) {
+        event.preventDefault();
+        form.classList.add('was-validated');
+        return;
+      }
       const button = form.querySelector('button[type="submit"], button:not([type])');
       if (!button || button.disabled) return;
       button.classList.add('is-loading');
       button.setAttribute('aria-busy', 'true');
+      button.disabled = true;
     });
+  });
+
+  document.querySelectorAll('[data-class-catalog]').forEach(catalog => {
+    const buttons = catalog.querySelectorAll('[data-class-filter]');
+    const items = catalog.querySelectorAll('[data-class-item]');
+    const empty = catalog.querySelector('.class-filter-empty');
+    buttons.forEach(button => button.addEventListener('click', () => {
+      const filter = button.dataset.classFilter;
+      let visible = 0;
+      buttons.forEach(item => item.classList.toggle('active', item === button));
+      items.forEach(item => {
+        const show = filter === 'all' || item.dataset.classItem.split(/\s+/).includes(filter);
+        item.hidden = !show;
+        if (show) visible++;
+      });
+      if (empty) empty.hidden = visible !== 0;
+    }));
   });
 
   document.querySelectorAll('form[data-confirm]').forEach(form => {

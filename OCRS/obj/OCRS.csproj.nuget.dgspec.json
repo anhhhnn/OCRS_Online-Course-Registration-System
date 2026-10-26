@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "D:\\aspc#\\baikiemtra\\demo_Project\\OCRS\\OCRS.csproj": {}
+    "D:\\aspc#\\baikiemtra\\demo_Project\\OCRS_Online-Course-Registration-System\\OCRS\\OCRS.csproj": {}
   },
   "projects": {
-    "D:\\aspc#\\baikiemtra\\demo_Project\\OCRS\\OCRS.csproj": {
+    "D:\\aspc#\\baikiemtra\\demo_Project\\OCRS_Online-Course-Registration-System\\OCRS\\OCRS.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\aspc#\\baikiemtra\\demo_Project\\OCRS\\OCRS.csproj",
+        "projectUniqueName": "D:\\aspc#\\baikiemtra\\demo_Project\\OCRS_Online-Course-Registration-System\\OCRS\\OCRS.csproj",
         "projectName": "OCRS",
-        "projectPath": "D:\\aspc#\\baikiemtra\\demo_Project\\OCRS\\OCRS.csproj",
+        "projectPath": "D:\\aspc#\\baikiemtra\\demo_Project\\OCRS_Online-Course-Registration-System\\OCRS\\OCRS.csproj",
         "packagesPath": "C:\\Users\\Admin\\.nuget\\packages\\",
-        "outputPath": "D:\\aspc#\\baikiemtra\\demo_Project\\OCRS\\obj\\",
+        "outputPath": "D:\\aspc#\\baikiemtra\\demo_Project\\OCRS_Online-Course-Registration-System\\OCRS\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"

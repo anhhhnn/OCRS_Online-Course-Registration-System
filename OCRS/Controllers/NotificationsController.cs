@@ -1,3 +1,23 @@
-using System.Security.Claims; using Microsoft.AspNetCore.Authorization; using Microsoft.AspNetCore.Mvc; using Microsoft.EntityFrameworkCore; using OCRS.Data;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using OCRS.Services;
+
 namespace OCRS.Controllers;
-[Authorize] public class NotificationsController(ApplicationDbContext db):Controller { public async Task<IActionResult> Index(){var uid=User.FindFirstValue(ClaimTypes.NameIdentifier);return View(await db.Notifications.Where(x=>x.UserId==uid).OrderByDescending(x=>x.CreatedAt).ToListAsync());} [HttpPost,ValidateAntiForgeryToken] public async Task<IActionResult> MarkRead(int id){var uid=User.FindFirstValue(ClaimTypes.NameIdentifier);var n=await db.Notifications.SingleOrDefaultAsync(x=>x.NotificationId==id&&x.UserId==uid);if(n!=null){n.IsRead=true;await db.SaveChangesAsync();}return RedirectToAction(nameof(Index));} }
+
+[Authorize]
+public sealed class NotificationsController(INotificationService notifications) : Controller
+{
+    public async Task<IActionResult> Index(CancellationToken ct)
+    {
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
+        return View(await notifications.GetMineAsync(userId, ct));
+    }
+
+    [HttpPost, ValidateAntiForgeryToken]
+    public async Task<IActionResult> MarkRead(int id, CancellationToken ct)
+    {
+        await notifications.MarkReadAsync(id, User.FindFirstValue(ClaimTypes.NameIdentifier)!, ct);
+        return RedirectToAction(nameof(Index));
+    }
+}

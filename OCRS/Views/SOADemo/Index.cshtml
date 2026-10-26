@@ -1,0 +1,67 @@
+@{
+    ViewData["Title"] = "SOA Service Demonstration";
+}
+@section Scripts {
+    <script src="~/js/soa-demo.js" asp-append-version="true"></script>
+}
+<link rel="stylesheet" href="~/css/soa-demo.css" asp-append-version="true" />
+
+<div id="soa-demo" data-authenticated="@(User.Identity?.IsAuthenticated == true ? "true" : "false")" data-student="@(User.IsInRole("Student") ? "true" : "false")">
+    @Html.AntiForgeryToken()
+    <section class="soa-hero">
+        <div><span class="soa-kicker">OCRS · SERVICE CONTRACT LAB</span><h1>SOA Service<br /><em>Demonstration</em></h1></div>
+        <p>Hệ thống OCRS áp dụng các nguyên lý lập trình hướng dịch vụ để cung cấp, kết nối và tái sử dụng những chức năng nghiệp vụ thông qua HTTP API.</p>
+    </section>
+
+    <section class="soa-map" aria-label="Luồng kiến trúc SOA">
+        <div><small>01</small><strong>Service Consumer</strong><span>MVC · JavaScript client</span></div><b>→</b>
+        <div><small>02</small><strong>REST API</strong><span>JSON · HTTP status</span></div><b>→</b>
+        <div><small>03</small><strong>Business Service</strong><span>Quy tắc dùng chung</span></div><b>→</b>
+        <div><small>04</small><strong>SQL Server</strong><span>Dữ liệu OCRS thật</span></div>
+    </section>
+
+    <header class="soa-section-head"><span>01 / SERVICE CATALOG</span><h2>Năm dịch vụ, một nguồn nghiệp vụ.</h2></header>
+    <div class="soa-service-grid">
+        <article><span>01</span><h3>User Service</h3><p>Hồ sơ và vai trò của chính người đang đăng nhập.</p><code>GET · PUT /api/soa/users/me</code><button class="soa-action" data-call="user">Chạy thử</button></article>
+        <article><span>02</span><h3>Course Service</h3><p>Tra cứu, tìm kiếm và lọc khóa học công khai.</p><code>GET /api/soa/courses</code><button class="soa-action" data-call="courses">Chạy thử</button></article>
+        <article><span>03</span><h3>Class Service</h3><p>Lịch học, giảng viên và số chỗ còn lại.</p><code>GET /api/soa/classes/{id}</code><button class="soa-action" data-call="classes">Chạy thử</button></article>
+        <article><span>04</span><h3>Registration Service</h3><p>Đăng ký an toàn, chống trùng và overbooking.</p><code>POST /api/soa/registrations</code><button class="soa-action" data-call="registration">Mở khu demo</button></article>
+        <article><span>05</span><h3>Notification Service</h3><p>Thông báo chỉ thuộc tài khoản hiện tại.</p><code>GET /api/soa/notifications/my</code><button class="soa-action" data-call="notifications">Chạy thử</button></article>
+    </div>
+
+    <section class="soa-console" id="service-console">
+        <div class="soa-console-bar"><span>LIVE HTTP RESPONSE</span><strong id="http-status">Chưa gửi request</strong></div>
+        <pre id="json-output">Chọn “Chạy thử” tại một dịch vụ để xem JSON thật.</pre>
+    </section>
+
+    <div class="soa-labs">
+        <section class="soa-lab" id="course-lab">
+            <span class="soa-kicker">COURSE SERVICE LAB</span><h2>Tra cứu khóa học</h2>
+            <div class="soa-controls"><input id="course-keyword" placeholder="Ví dụ: IELTS" /><button id="search-courses">Tìm kiếm</button><button id="load-courses" class="secondary">Lấy tất cả</button></div>
+            <div id="course-results" class="soa-results"></div>
+        </section>
+        <section class="soa-lab" id="class-lab">
+            <span class="soa-kicker">CLASS SERVICE LAB</span><h2>Kiểm tra lớp và chỗ trống</h2>
+            <div class="soa-controls"><select id="course-select"><option value="">Chọn khóa học</option></select><button id="load-classes">Lấy danh sách lớp</button></div>
+            <div id="class-results" class="soa-results"></div>
+        </section>
+        <section class="soa-lab" id="registration-lab">
+            <span class="soa-kicker">REGISTRATION SERVICE LAB</span><h2>Đăng ký bằng danh tính thật</h2>
+            @if (!User.Identity?.IsAuthenticated ?? true) { <p class="soa-notice">Hãy đăng nhập bằng tài khoản Student để chạy thao tác ghi dữ liệu.</p> }
+            else if (!User.IsInRole("Student")) { <p class="soa-notice">Tài khoản hiện tại không có vai trò Student. API sẽ từ chối thao tác đăng ký.</p> }
+            else { <p class="soa-notice ok">Đang dùng tài khoản Student hiện tại. StudentId được xác định ở server, không nhận từ trình duyệt.</p> }
+            <div class="soa-controls"><select id="class-select"><option value="">Chọn lớp học</option></select><button id="register-class" @(User.IsInRole("Student") ? null : "disabled")>Đăng ký qua API</button></div>
+        </section>
+    </div>
+
+    <header class="soa-section-head"><span>02 / PRINCIPLES</span><h2>Nguyên lý được chứng minh bằng code chạy thật.</h2></header>
+    <div class="soa-principles">
+        <article><b>Loose Coupling</b><p>Client chỉ biết URL và DTO, không biết EF Core hay SQL Server.</p></article>
+        <article><b>Reusability</b><p>MVC và REST API dùng chung CourseService; client thứ hai gọi cùng API.</p></article>
+        <article><b>Interoperability</b><p>Hợp đồng HTTP và JSON dùng được từ mọi client phù hợp.</p></article>
+        <article><b>Encapsulation</b><p>Quy tắc đăng ký nằm trong RegistrationService.</p></article>
+        <article><b>Composability</b><p>Đăng ký điều phối kiểm tra lớp, giữ chỗ và tạo thông báo.</p></article>
+        <article><b>Service Contract</b><p>Method, URL, DTO, status và quyền truy cập được tài liệu hóa.</p></article>
+    </div>
+    <p class="soa-client-link"><a href="/soa-client/index.html" target="_blank">Mở client HTML/JavaScript độc lập →</a></p>
+</div>

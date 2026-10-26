@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="OCRS.Tests/OCRS.Tests.csproj" />
+  <Project Path="OCRS/OCRS.csproj" />
+</Solution>

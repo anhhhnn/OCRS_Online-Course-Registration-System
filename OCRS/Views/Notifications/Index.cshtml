@@ -1,2 +1,2 @@
-@model IEnumerable<Notification>
+@model IEnumerable<OCRS.DTOs.SOA.NotificationDto>
 @{ViewData["Title"]="Thông báo";}<h1>Thông báo</h1><div class="table-card mt-4 p-0 overflow-hidden">@if(!Model.Any()){<div class="p-5 text-center text-secondary">Bạn chưa có thông báo.</div>}@foreach(var n in Model){<div class="p-3 border-bottom @(n.IsRead?"":"bg-light")"><div class="d-flex justify-content-between"><b>@n.Title</b><small>@n.CreatedAt.ToLocalTime().ToString("dd/MM/yyyy HH:mm")</small></div><p class="mb-1">@n.Content</p>@if(!n.IsRead){<form method="post" action="/Notifications/MarkRead/@n.NotificationId">@Html.AntiForgeryToken()<button class="btn btn-link btn-sm p-0">Đánh dấu đã đọc</button></form>}</div>}</div>
